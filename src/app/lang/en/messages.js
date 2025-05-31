@@ -24,7 +24,104 @@ const SIGNUP_STRINGS = {
   SIGNUP_ERROR: 'An error occurred during signup. Please try again.'
 };
 
+const USER_STRINGS = {
+  pageTitle: "Story Generator",
+  loading: "Generating your story...",
+  genre: {
+    label: "Genre",
+    placeholder: "Select a genre",
+    options: {
+      fantasy: "Fantasy",
+      scifi: "Science Fiction",
+      mystery: "Mystery",
+      romance: "Romance",
+      horror: "Horror",
+      adventure: "Adventure",
+      comedy: "Comedy",
+      drama: "Drama"
+    }
+  },
+  characterName: {
+    label: "Main Character Name",
+    pattern: "[A-Za-z\\s]+",
+    title: "Only letters and spaces allowed",
+    maxLength: 50
+  },
+  role: {
+    label: "Character Role",
+    placeholder: "Select a role",
+    options: {
+      hero: "Hero",
+      villain: "Villain",
+      detective: "Detective",
+      scientist: "Scientist",
+      warrior: "Warrior",
+      mage: "Mage",
+      explorer: "Explorer",
+      merchant: "Merchant"
+    }
+  },
+  setting: {
+    label: "Setting",
+    placeholder: "Select a setting",
+    options: {
+      medieval: "Medieval Kingdom",
+      futuristic: "Futuristic City",
+      haunted: "Haunted House",
+      space: "Space Station",
+      forest: "Enchanted Forest",
+      desert: "Desert Wasteland",
+      underwater: "Underwater City",
+      mountain: "Mountain Village"
+    }
+  },
+  tone: {
+    label: "Tone",
+    placeholder: "Select a tone",
+    options: {
+      dark: "Dark",
+      light: "Light-hearted",
+      serious: "Serious",
+      humorous: "Humorous",
+      mysterious: "Mysterious",
+      romantic: "Romantic",
+      action: "Action-packed",
+      contemplative: "Contemplative"
+    }
+  },
+  plotTwist: {
+    label: "Plot Twist",
+    checkboxLabel: "Add an unexpected plot twist"
+  },
+  generateButton: "Generate Story",
+  errors: {
+    storyGeneration: "Failed to generate story",
+    generic: "An error occurred: "
+  },
+  alerts: {
+    noApiCalls: "You have no API calls remaining. Please upgrade your plan."
+  }
+};
+
+const NAVBAR_STRINGS = {
+  API_CALLS_LEFT: "API calls left: ",
+  HELLO_USER: "Hello, ",
+  CHANGE_USERNAME: "Change Username",
+  LOGOUT: "Logout",
+  MODAL_TITLE: "Change Username",
+  NEW_USERNAME_LABEL: "New Username:",
+  CANCEL_BUTTON: "Cancel",
+  SUBMIT_BUTTON: "Submit",
+  LOGOUT_FAILED: "Logout failed. Please try again.",
+  LOGOUT_ERROR: "An error occurred during logout.",
+  EMPTY_USERNAME_ERROR: "Please enter a username.",
+  UPDATE_SUCCESS: "Username updated successfully!",
+  UPDATE_ERROR: "An error occurred while updating username."
+};
+
 export {
     LOGIN_STRINGS,
     SIGNUP_STRINGS,
+    USER_STRINGS,
+    NAVBAR_STRINGS,
 }
