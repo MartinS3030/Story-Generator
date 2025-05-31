@@ -9,7 +9,7 @@ interface SignupResponse {
   message?: string;
 }
 
-const APP_DOMAIN: string = process.env.NEXT_PUBLIC_APP_DOMAIN || 'http://localhost:4000';
+const APP_DOMAIN = process.env.NEXT_PUBLIC_APP_DOMAIN;
 
 export default function Page() {
   const [firstName, setFirstName] = useState<string>('');
