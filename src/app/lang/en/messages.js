@@ -119,9 +119,27 @@ const NAVBAR_STRINGS = {
   UPDATE_ERROR: "An error occurred while updating username."
 };
 
+const ADMIN_STRINGS = {
+  LOGOUT_BUTTON: 'Logout',
+  LOGOUT_FAILED: 'Logout failed. Please try again.',
+  LOGOUT_ERROR: 'An error occurred during logout.',
+  DELETE_USER_CONFIRMATION: (username) => `Are you sure you want to delete user "${username}"?`,
+  DELETE_USER_ERROR: 'An error occurred while deleting the user.',
+  USER_MANAGEMENT_TITLE: 'User Management',
+  RESOURCE_MANAGEMENT_TITLE: 'Resource Usage',
+  USER_TABLE_HEADERS: ['Username', 'Email', 'Admin', 'API Calls', 'Actions'],
+  RESOURCE_TABLE_HEADERS: ['Method', 'Endpoint', 'Requests'],
+  NO_USERS_FOUND: 'No users found',
+  NO_RESOURCES_FOUND: 'No resources found',
+  ADMIN_STATUS: { YES: 'Yes', NO: 'No' },
+  DELETE_BUTTON: 'Delete',
+  RESOURCE_FETCH_ERROR: 'Failed to fetch resource data'
+};
+
 export {
     LOGIN_STRINGS,
     SIGNUP_STRINGS,
     USER_STRINGS,
     NAVBAR_STRINGS,
+    ADMIN_STRINGS,
 }
