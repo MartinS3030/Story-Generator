@@ -1,26 +1,85 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --deep-mahogany: #2c1810;
+  --saddle-brown: #8b4513;
+  --golden: #d4af37;
+  --light-gold: #c9a876;
+  --warm-cream: #f4f1e8;
+  --rich-brown: #3d2817;
+  --warm-beige: #e8dcc0;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-deep-mahogany: var(--deep-mahogany);
+  --color-saddle-brown: var(--saddle-brown);
+  --color-golden: var(--golden);
+  --color-light-gold: var(--light-gold);
+  --color-warm-cream: var(--warm-cream);
+  --color-rich-brown: var(--rich-brown);
+  --color-warm-beige: var(--warm-beige);
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.bg-deep-mahogany { background-color: var(--deep-mahogany); }
+.bg-saddle-brown { background-color: var(--saddle-brown); }
+.bg-golden { background-color: var(--golden); }
+.bg-light-gold { background-color: var(--light-gold); }
+.bg-warm-cream { background-color: var(--warm-cream); }
+.bg-rich-brown { background-color: var(--rich-brown); }
+.bg-warm-beige { background-color: var(--warm-beige); }
+
+.text-deep-mahogany { color: var(--deep-mahogany); }
+.text-saddle-brown { color: var(--saddle-brown); }
+.text-golden { color: var(--golden); }
+.text-light-gold { color: var(--light-gold); }
+.text-warm-cream { color: var(--warm-cream); }
+.text-rich-brown { color: var(--rich-brown); }
+.text-warm-beige { color: var(--warm-beige); }
+
+.border-deep-mahogany { border-color: var(--deep-mahogany); }
+.border-saddle-brown { border-color: var(--saddle-brown); }
+.border-golden { border-color: var(--golden); }
+.border-light-gold { border-color: var(--light-gold); }
+.border-warm-cream { border-color: var(--warm-cream); }
+.border-rich-brown { border-color: var(--rich-brown); }
+.border-warm-beige { border-color: var(--warm-beige); }
+
+.btn-primary {
+  background-color: var(--saddle-brown);
+  color: var(--warm-cream);
+  transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--golden);
+}
+
+.btn-primary:focus {
+  outline: 2px solid var(--golden);
+  outline-offset: 2px;
+}
+
+.input-custom {
+  background-color: var(--warm-cream);
+  color: var(--deep-mahogany);
+  border-color: var(--saddle-brown);
+}
+
+.input-custom:focus {
+  outline: none;
+  border-color: var(--golden);
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+}
+
+.font-dancing {
+  font-family: var(--font-dancing), cursive;
 }

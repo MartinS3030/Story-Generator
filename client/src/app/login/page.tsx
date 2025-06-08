@@ -62,84 +62,84 @@ export default function Page() {
     setter(e.target.value);
   };
 
-return (
-  <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-    <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">
-      {LOGIN_STRINGS.PAGE_TITLE}
-    </h1>
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-deep-mahogany py-8 px-4 sm:px-6 lg:px-8">
+      <h1 className="text-3xl text-center text-golden font-dancing mb-8">
+        {LOGIN_STRINGS.PAGE_TITLE}
+      </h1>
 
-    <div className="flex flex-col lg:flex-row max-w-4xl w-full space-y-8 lg:space-y-0 lg:space-x-8">
-      <div className="hidden lg:flex flex-col justify-center w-full lg:w-1/2 pr-4">
-        <blockquote className="text-lg italic text-gray-700 border-l-4 border-blue-500 pl-4">
-          {LOGIN_STRINGS.QUOTE}
-          <footer className="mt-2 text-sm text-gray-500">{LOGIN_STRINGS.QUOTE_AUTHOR}</footer>
-        </blockquote>
-      </div>
+      <div className="flex flex-col lg:flex-row max-w-4xl w-full space-y-8 lg:space-y-0 lg:space-x-8">
+        <div className="hidden lg:flex flex-col justify-center w-full lg:w-1/2 pr-4">
+          <blockquote className="text-lg italic text-light-gold border-l-4 border-saddle-brown pl-4">
+            {LOGIN_STRINGS.QUOTE}
+            <footer className="mt-2 text-sm text-light-gold">{LOGIN_STRINGS.QUOTE_AUTHOR}</footer>
+          </blockquote>
+        </div>
 
-      <div className="w-full lg:w-1/2">
-        <div className="bg-white p-6 sm:p-8 rounded-lg shadow-md">
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 text-center">
-              {LOGIN_STRINGS.LOGIN_HEADING}
-            </h2>
-          </div>
-          
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                {LOGIN_STRINGS.EMAIL_LABEL}
-              </label>
-              <input
-                id="email"
-                type="email"
-                required
-                value={email}
-                onChange={handleInputChange(setEmail)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                disabled={isLoading}
-              />
+        <div className="w-full lg:w-1/2">
+          <div className="bg-rich-brown p-6 sm:p-8 rounded-lg shadow-md">
+            <div className="mb-6">
+              <h2 className="text-2xl text-center text-golden font-dancing">
+                {LOGIN_STRINGS.LOGIN_HEADING}
+              </h2>
             </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                {LOGIN_STRINGS.PASSWORD_LABEL}
-              </label>
-              <input
-                id="password"
-                type="password"
-                required
-                value={password}
-                onChange={handleInputChange(setPassword)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                disabled={isLoading}
-              />
-            </div>
-
-            {error && (
-              <div className="text-red-600 text-sm text-center">
-                {error}
-              </div>
-            )}
             
-            <button
-              type="button"
-              onClick={handleSubmit}
-              disabled={isLoading}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isLoading ? 'Signing in...' : LOGIN_STRINGS.LOGIN_BUTTON}
-            </button>
-          </div>
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-warm-beige mb-1">
+                  {LOGIN_STRINGS.EMAIL_LABEL}
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  required
+                  value={email}
+                  onChange={handleInputChange(setEmail)}
+                  className="w-full px-3 py-2 border rounded-md shadow-sm input-custom"
+                  disabled={isLoading}
+                />
+              </div>
 
-          <div className="mt-6 text-center text-sm">
-            <span className="text-gray-600">{LOGIN_STRINGS.NO_ACCOUNT_MESSAGE} </span>
-            <Link href="/signup" className="font-medium text-blue-600 hover:text-blue-500">
-              {LOGIN_STRINGS.SIGNUP_LINK}
-            </Link>
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-warm-beige mb-1">
+                  {LOGIN_STRINGS.PASSWORD_LABEL}
+                </label>
+                <input
+                  id="password"
+                  type="password"
+                  required
+                  value={password}
+                  onChange={handleInputChange(setPassword)}
+                  className="w-full px-3 py-2 border rounded-md shadow-sm input-custom"
+                  disabled={isLoading}
+                />
+              </div>
+
+              {error && (
+                <div className="text-sm text-center text-golden">
+                  {error}
+                </div>
+              )}
+              
+              <button
+                type="button"
+                onClick={handleSubmit}
+                disabled={isLoading}
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isLoading ? 'Signing in...' : LOGIN_STRINGS.LOGIN_BUTTON}
+              </button>
+            </div>
+
+            <div className="mt-6 text-center text-sm">
+              <span className="text-warm-beige">{LOGIN_STRINGS.NO_ACCOUNT_MESSAGE} </span>
+              <Link href="/signup" className="font-medium text-golden hover:text-light-gold">
+                {LOGIN_STRINGS.SIGNUP_LINK}
+              </Link>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-);
-} 
+  );
+}
