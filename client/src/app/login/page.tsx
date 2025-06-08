@@ -62,10 +62,22 @@ export default function Page() {
     setter(e.target.value);
   };
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div className="bg-white p-8 rounded-lg shadow-md">
+return (
+  <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">
+      {LOGIN_STRINGS.PAGE_TITLE}
+    </h1>
+
+    <div className="flex flex-col lg:flex-row max-w-4xl w-full space-y-8 lg:space-y-0 lg:space-x-8">
+      <div className="hidden lg:flex flex-col justify-center w-full lg:w-1/2 pr-4">
+        <blockquote className="text-lg italic text-gray-700 border-l-4 border-blue-500 pl-4">
+          {LOGIN_STRINGS.QUOTE}
+          <footer className="mt-2 text-sm text-gray-500">{LOGIN_STRINGS.QUOTE_AUTHOR}</footer>
+        </blockquote>
+      </div>
+
+      <div className="w-full lg:w-1/2">
+        <div className="bg-white p-6 sm:p-8 rounded-lg shadow-md">
           <div className="mb-6">
             <h2 className="text-2xl font-bold text-gray-900 text-center">
               {LOGIN_STRINGS.LOGIN_HEADING}
@@ -87,7 +99,7 @@ export default function Page() {
                 disabled={isLoading}
               />
             </div>
-            
+
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                 {LOGIN_STRINGS.PASSWORD_LABEL}
@@ -118,7 +130,7 @@ export default function Page() {
               {isLoading ? 'Signing in...' : LOGIN_STRINGS.LOGIN_BUTTON}
             </button>
           </div>
-          
+
           <div className="mt-6 text-center text-sm">
             <span className="text-gray-600">{LOGIN_STRINGS.NO_ACCOUNT_MESSAGE} </span>
             <Link href="/signup" className="font-medium text-blue-600 hover:text-blue-500">
@@ -128,5 +140,6 @@ export default function Page() {
         </div>
       </div>
     </div>
-  );
+  </div>
+);
 } 

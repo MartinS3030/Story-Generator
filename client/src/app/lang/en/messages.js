@@ -7,7 +7,10 @@ const LOGIN_STRINGS = {
   NO_ACCOUNT_MESSAGE: "Don't have an account?",
   SIGNUP_LINK: 'Sign up',
   LOGIN_FAILED: 'Login failed. Please check your credentials.',
-  GENERIC_ERROR: 'An error occurred. Please try again.'
+  GENERIC_ERROR: 'An error occurred. Please try again.',
+  PAGE_TITLE: 'Story Generator',
+  QUOTE: '“this is a test quote to see how it looks like.”',
+  QUOTE_AUTHOR: '– anonymous person',
 };
 
 const SIGNUP_STRINGS = {
