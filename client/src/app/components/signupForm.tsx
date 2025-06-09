@@ -3,6 +3,7 @@
 import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { SIGNUP_STRINGS } from '../lang/en/messages';
+import { validateEmail, validatePassword, validateRequired, getPasswordStrength } from '../util/util';
 
 interface SignupResponse {
   message?: string;
@@ -10,6 +11,12 @@ interface SignupResponse {
 
 interface SignupFormProps {
   onToggleMode: () => void;
+}
+
+interface ValidationErrors {
+  firstName?: string;
+  email?: string;
+  password?: string;
 }
 
 const APP_DOMAIN = process.env.NEXT_PUBLIC_APP_DOMAIN;
@@ -21,13 +28,42 @@ export default function SignupForm({ onToggleMode }: SignupFormProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState<string>('');
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
+  const [showPasswordStrength, setShowPasswordStrength] = useState<boolean>(false);
   const router = useRouter();
+
+  const validateForm = (): boolean => {
+    const errors: ValidationErrors = {};
+    
+    const firstNameValidation = validateRequired(firstName, 'First name');
+    if (!firstNameValidation.isValid) {
+      errors.firstName = firstNameValidation.message;
+    }
+
+    const emailValidation = validateEmail(email);
+    if (!emailValidation.isValid) {
+      errors.email = emailValidation.message;
+    }
+
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.isValid) {
+      errors.password = passwordValidation.message;
+    }
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   const handleSubmit = async (e: FormEvent<HTMLButtonElement>): Promise<void> => {
     e.preventDefault();
-    setIsLoading(true);
     setError('');
     setSuccess('');
+
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsLoading(true);
 
     try {
       const response = await fetch(`${APP_DOMAIN}/api/v1/register`, {
@@ -62,9 +98,35 @@ export default function SignupForm({ onToggleMode }: SignupFormProps) {
   };
 
   const handleInputChange = (
-    setter: React.Dispatch<React.SetStateAction<string>>
+    setter: React.Dispatch<React.SetStateAction<string>>,
+    fieldName: keyof ValidationErrors
   ) => (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setter(e.target.value);
+    const value = e.target.value;
+    setter(value);
+
+    if (validationErrors[fieldName]) {
+      setValidationErrors(prev => ({ ...prev, [fieldName]: undefined }));
+    }
+
+    if (fieldName === 'password') {
+      setShowPasswordStrength(value.length > 0);
+    }
+  };
+
+  const passwordStrength = getPasswordStrength(password);
+
+  const getStrengthColor = (level: string): string => {
+    switch (level) {
+      case 'weak': return 'bg-red-500';
+      case 'medium': return 'bg-yellow-500';
+      case 'strong': return 'bg-blue-500';
+      case 'very-strong': return 'bg-green-500';
+      default: return 'bg-gray-300';
+    }
+  };
+
+  const getStrengthWidth = (score: number): string => {
+    return `${(score / 7) * 100}%`;
   };
 
   return (
@@ -85,10 +147,15 @@ export default function SignupForm({ onToggleMode }: SignupFormProps) {
             type="text"
             required
             value={firstName}
-            onChange={handleInputChange(setFirstName)}
-            className="w-full px-3 py-2 border rounded-md shadow-sm input-custom"
+            onChange={handleInputChange(setFirstName, 'firstName')}
+            className={`w-full px-3 py-2 border rounded-md shadow-sm input-custom ${
+              validationErrors.firstName ? 'border-red-500 focus:border-red-500' : ''
+            }`}
             disabled={isLoading}
           />
+          {validationErrors.firstName && (
+            <p className="text-sm text-red-400 mt-1">{validationErrors.firstName}</p>
+          )}
         </div>
         
         <div>
@@ -100,10 +167,15 @@ export default function SignupForm({ onToggleMode }: SignupFormProps) {
             type="email"
             required
             value={email}
-            onChange={handleInputChange(setEmail)}
-            className="w-full px-3 py-2 border rounded-md shadow-sm input-custom"
+            onChange={handleInputChange(setEmail, 'email')}
+            className={`w-full px-3 py-2 border rounded-md shadow-sm input-custom ${
+              validationErrors.email ? 'border-red-500 focus:border-red-500' : ''
+            }`}
             disabled={isLoading}
           />
+          {validationErrors.email && (
+            <p className="text-sm text-red-400 mt-1">{validationErrors.email}</p>
+          )}
         </div>
         
         <div>
@@ -115,10 +187,31 @@ export default function SignupForm({ onToggleMode }: SignupFormProps) {
             type="password"
             required
             value={password}
-            onChange={handleInputChange(setPassword)}
-            className="w-full px-3 py-2 border rounded-md shadow-sm input-custom"
+            onChange={handleInputChange(setPassword, 'password')}
+            className={`w-full px-3 py-2 border rounded-md shadow-sm input-custom ${
+              validationErrors.password ? 'border-red-500 focus:border-red-500' : ''
+            }`}
             disabled={isLoading}
           />
+          
+          {showPasswordStrength && password && (
+            <div className="mt-2">
+              <div className="flex justify-between text-xs text-warm-beige mb-1">
+                <span>Password strength</span>
+                <span className="capitalize">{passwordStrength.level.replace('-', ' ')}</span>
+              </div>
+              <div className="w-full bg-gray-700 rounded-full h-2">
+                <div
+                  className={`h-2 rounded-full transition-all duration-300 ${getStrengthColor(passwordStrength.level)}`}
+                  style={{ width: getStrengthWidth(passwordStrength.score) }}
+                ></div>
+              </div>
+            </div>
+          )}
+          
+          {validationErrors.password && (
+            <p className="text-sm text-red-400 mt-1">{validationErrors.password}</p>
+          )}
         </div>
 
         {error && (

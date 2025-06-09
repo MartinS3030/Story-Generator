@@ -3,6 +3,7 @@
 import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { LOGIN_STRINGS } from '../lang/en/messages';
+import { validateEmail, validateRequired } from '../util/util';
 
 interface LoginResponse {
   isAdmin: boolean;
@@ -13,6 +14,11 @@ interface LoginFormProps {
   onToggleMode: () => void;
 }
 
+interface ValidationErrors {
+  email?: string;
+  password?: string;
+}
+
 const APP_DOMAIN = process.env.NEXT_PUBLIC_APP_DOMAIN;
 
 export default function LoginForm({ onToggleMode }: LoginFormProps) {
@@ -20,12 +26,35 @@ export default function LoginForm({ onToggleMode }: LoginFormProps) {
   const [password, setPassword] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
   const router = useRouter();
+
+  const validateForm = (): boolean => {
+    const errors: ValidationErrors = {};
+    
+    const emailValidation = validateEmail(email);
+    if (!emailValidation.isValid) {
+      errors.email = emailValidation.message;
+    }
+
+    const passwordValidation = validateRequired(password, 'Password');
+    if (!passwordValidation.isValid) {
+      errors.password = passwordValidation.message;
+    }
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   const handleSubmit = async (e: FormEvent<HTMLButtonElement>): Promise<void> => {
     e.preventDefault();
-    setIsLoading(true);
     setError('');
+
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsLoading(true);
 
     try {
       const response = await fetch(`${APP_DOMAIN}/api/v1/login`, {
@@ -60,9 +89,15 @@ export default function LoginForm({ onToggleMode }: LoginFormProps) {
   };
 
   const handleInputChange = (
-    setter: React.Dispatch<React.SetStateAction<string>>
+    setter: React.Dispatch<React.SetStateAction<string>>,
+    fieldName: keyof ValidationErrors
   ) => (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setter(e.target.value);
+    const value = e.target.value;
+    setter(value);
+
+    if (validationErrors[fieldName]) {
+      setValidationErrors(prev => ({ ...prev, [fieldName]: undefined }));
+    }
   };
 
   return (
@@ -83,10 +118,15 @@ export default function LoginForm({ onToggleMode }: LoginFormProps) {
             type="email"
             required
             value={email}
-            onChange={handleInputChange(setEmail)}
-            className="w-full px-3 py-2 border rounded-md shadow-sm input-custom"
+            onChange={handleInputChange(setEmail, 'email')}
+            className={`w-full px-3 py-2 border rounded-md shadow-sm input-custom ${
+              validationErrors.email ? 'border-red-500 focus:border-red-500' : ''
+            }`}
             disabled={isLoading}
           />
+          {validationErrors.email && (
+            <p className="text-sm text-red-400 mt-1">{validationErrors.email}</p>
+          )}
         </div>
 
         <div>
@@ -98,14 +138,19 @@ export default function LoginForm({ onToggleMode }: LoginFormProps) {
             type="password"
             required
             value={password}
-            onChange={handleInputChange(setPassword)}
-            className="w-full px-3 py-2 border rounded-md shadow-sm input-custom"
+            onChange={handleInputChange(setPassword, 'password')}
+            className={`w-full px-3 py-2 border rounded-md shadow-sm input-custom ${
+              validationErrors.password ? 'border-red-500 focus:border-red-500' : ''
+            }`}
             disabled={isLoading}
           />
+          {validationErrors.password && (
+            <p className="text-sm text-red-400 mt-1">{validationErrors.password}</p>
+          )}
         </div>
 
         {error && (
-          <div className="text-sm text-center text-golden">
+          <div className="text-sm text-center text-golden bg-red-900/20 p-3 rounded-md border border-red-800/30">
             {error}
           </div>
         )}
