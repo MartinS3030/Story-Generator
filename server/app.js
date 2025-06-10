@@ -1,6 +1,12 @@
 const express = require("express");
 const cors = require("cors");
-const { createUserTable, createApiUsageTable } = require("./db/connection");
+const { 
+  createUserTable, 
+  createApiUsageTable,
+  createStoriesTable,
+  createTagsTable,
+  createStoryTagsTable
+ } = require("./db/connection");
 const apiRoutes = require("./routes");
 const cookieParser = require("cookie-parser");
 const app = express();
@@ -28,6 +34,10 @@ app.use(
 // Ensure tables exist
 createUserTable();
 createApiUsageTable();
+createStoriesTable();
+createTagsTable();
+createStoryTagsTable();
+
 
 // Swagger
 const swaggerOptions = {

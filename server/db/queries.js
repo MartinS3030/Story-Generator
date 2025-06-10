@@ -59,7 +59,7 @@ const findUserById = (id, callback) => {
     if (err) return callback(err, null);
     callback(null, results);
   });
-}
+};
 
 /**
  * Fetches all users from the database.
@@ -129,9 +129,9 @@ const decrementApiCalls = (id, callback) => {
  * @param {number} id - The user ID.
  * @param {function(Error, Object):void} callback - Callback function with error and results.
  */
-const getApiCallCount= (id, callback) => {
-    const query = `SELECT api_calls FROM api_usage WHERE user_id = ?`;
-    db.query(query, [id], (err, results) => {
+const getApiCallCount = (id, callback) => {
+  const query = `SELECT api_calls FROM api_usage WHERE user_id = ?`;
+  db.query(query, [id], (err, results) => {
     if (err) return callback(err, null);
 
     // If no result found, create a new entry
@@ -145,7 +145,7 @@ const getApiCallCount= (id, callback) => {
       callback(null, { api_calls: results[0].api_calls });
     }
   });
-}
+};
 
 /**
  * Increments the request count for an API endpoint.
@@ -199,6 +199,109 @@ const getAllResources = (callback) => {
   });
 };
 
+/**
+ * Adds a new story for a user, including inserting any associated tags.
+ * If a tag doesn't exist, it will be created.
+ * @param {number} userId - ID of the user creating the story.
+ * @param {string} title - Title of the story.
+ * @param {string} content - Content of the story.
+ * @param {string[]} tags - Array of tag names to associate with the story.
+ * @param {function(Error, Object):void} callback - Callback function with error and results.
+ */
+const addNewStory = (userId, title, content, tags, callback) => {
+  const insertStoryQuery = `INSERT INTO stories (user_id, title, content, created_at) VALUES (?, ?, ?, NOW())`;
+
+  db.query(insertStoryQuery, [userId, title, content], (err, storyResult) => {
+    if (err) return callback(err, null);
+
+    const storyId = storyResult.insertId;
+
+    if (!tags || tags.length === 0) return callback(null, { story: storyResult, tags: [] });
+
+    const tagInsertPromises = tags.map(tag =>
+      new Promise((resolve, reject) => {
+        const insertTagQuery = `INSERT INTO tags (name) VALUES (?) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id)`;
+        db.query(insertTagQuery, [tag], (tagErr, tagResult) => {
+          if (tagErr) return reject(tagErr);
+          resolve(tagResult.insertId);
+        });
+      })
+    );
+
+    Promise.all(tagInsertPromises)
+      .then(tagIds => {
+        const storyTagValues = tagIds.map(tagId => [storyId, tagId]);
+        const insertStoryTagsQuery = `INSERT INTO story_tags (story_id, tag_id) VALUES ?`;
+        db.query(insertStoryTagsQuery, [storyTagValues], (linkErr, linkResults) => {
+          if (linkErr) return callback(linkErr, null);
+          callback(null, { story: storyResult, tags: tagIds });
+        });
+      })
+      .catch(tagErr => callback(tagErr, null));
+  });
+};
+
+/**
+ * Deletes a story by ID, including its tag associations.
+ * @param {number} storyId - The ID of the story to delete.
+ * @param {function(Error, Object):void} callback - Callback function with error and results.
+ */
+const deleteStory = (storyId, callback) => {
+  const deleteLinksQuery = `DELETE FROM story_tags WHERE story_id = ?`;
+  db.query(deleteLinksQuery, [storyId], (err) => {
+    if (err) return callback(err, null);
+
+    const deleteStoryQuery = `DELETE FROM stories WHERE id = ?`;
+    db.query(deleteStoryQuery, [storyId], (storyErr, storyResult) => {
+      if (storyErr) return callback(storyErr, null);
+      callback(null, storyResult);
+    });
+  });
+};
+
+/**
+ * Retrieves all stories created by a user, along with their associated tags.
+ * @param {number} userId - The ID of the user whose stories to retrieve.
+ * @param {function(Error, Object[]):void} callback - Callback function with error and results (array of stories).
+ */
+const getStoriesForUser = (userId, callback) => {
+  const query = `
+    SELECT s.*, GROUP_CONCAT(t.name) AS tags
+    FROM stories s
+    LEFT JOIN story_tags st ON s.id = st.story_id
+    LEFT JOIN tags t ON st.tag_id = t.id
+    WHERE s.user_id = ?
+    GROUP BY s.id
+  `;
+  db.query(query, [userId], (err, results) => {
+    if (err) return callback(err, null);
+    const stories = results.map(row => ({
+      id: row.id,
+      user_id: row.user_id,
+      title: row.title,
+      content: row.content,
+      created_at: row.created_at,
+      tags: row.tags ? row.tags.split(',') : []
+    }));
+    callback(null, stories);
+  });
+};
+
+/**
+ * Updates the favorite status of a story.
+ * @param {number} storyId - The ID of the story.
+ * @param {boolean} isFavorite - True to mark as favorite, false to unmark.
+ * @param {function(Error, Object):void} callback - Callback function with error and results.
+ */
+const setStoryFavoriteStatus = (storyId, isFavorite, callback) => {
+  const query = `UPDATE stories SET is_favorite = ? WHERE id = ?`;
+  db.query(query, [isFavorite ? 1 : 0, storyId], (err, results) => {
+    if (err) return callback(err, null);
+    callback(null, results);
+  });
+};
+
+
 module.exports = {
   registerUser,
   findUserByEmail,
@@ -211,4 +314,9 @@ module.exports = {
   addNewApiUsage,
   incrementCountInDB,
   getAllResources,
+  addNewStory,
+  deleteStory,
+  getStoriesForUser,
+  setStoryFavoriteStatus,
 };
+
