@@ -157,7 +157,7 @@ export default function StoryGeneratorPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-warm-cream">
       {userData && (
         <Navbar
           apicalls={apiCalls}
@@ -168,10 +168,10 @@ export default function StoryGeneratorPage() {
       )}
 
       {isLoading && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="flex flex-col items-center text-white">
-            <div className="w-16 h-16 border-4 border-gray-300 border-t-green-500 rounded-full animate-spin mb-4"></div>
-            <p className="text-lg">{USER_STRINGS.loading}</p>
+        <div className="fixed inset-0 bg-deep-mahogany bg-opacity-80 flex items-center justify-center z-50">
+          <div className="flex flex-col items-center text-warm-cream">
+            <div className="w-16 h-16 border-4 border-warm-beige border-t-golden rounded-full animate-spin mb-4"></div>
+            <p className="text-lg font-medium">{USER_STRINGS.loading}</p>
           </div>
         </div>
       )}
@@ -179,126 +179,150 @@ export default function StoryGeneratorPage() {
       <div className="py-8 px-4">
         {apiCalls === 0 && (
           <div className="max-w-2xl mx-auto mb-6">
-            <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-lg" role="alert">
-              <p>{USER_STRINGS.alerts.noApiCalls}</p>
+            <div className="bg-warm-beige border-2 border-light-gold text-rich-brown px-6 py-4 rounded-lg shadow-md" role="alert">
+              <div className="flex items-center">
+                <svg className="w-5 h-5 mr-3 text-saddle-brown" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+                <p className="font-medium">{USER_STRINGS.alerts.noApiCalls}</p>
+              </div>
             </div>
           </div>
         )}
 
-        <h1 className="text-4xl font-bold text-center text-gray-800 mb-8 pt-8">
-          {USER_STRINGS.pageTitle}
-        </h1>
+        <div className="text-center mb-12 pt-8">
+          <h1 className="text-5xl font-bold text-deep-mahogany mb-4 font-dancing">
+            {USER_STRINGS.pageTitle}
+          </h1>
+          <div className="w-32 h-1 bg-gradient-to-r from-saddle-brown via-golden to-saddle-brown mx-auto rounded-full"></div>
+          <p className="text-rich-brown mt-4 text-lg">Craft your perfect story with our AI-powered generator</p>
+        </div>
 
-        <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-8">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label htmlFor="genre" className="block text-sm font-medium text-gray-700 mb-2">
-                {USER_STRINGS.genre.label}
-              </label>
-              <select
-                id="genre"
-                name="genre"
-                value={formData.genre}
-                onChange={handleInputChange}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+        <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-2xl border border-warm-beige overflow-hidden">
+          <div className="bg-gradient-to-r from-saddle-brown to-rich-brown p-6">
+            <h2 className="text-2xl font-bold text-warm-cream text-center">Story Configuration</h2>
+          </div>
+          
+          <div className="p-8">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label htmlFor="genre" className="block text-sm font-semibold text-deep-mahogany mb-3">
+                  {USER_STRINGS.genre.label}
+                </label>
+                <select
+                  id="genre"
+                  name="genre"
+                  value={formData.genre}
+                  onChange={handleInputChange}
+                  required
+                  className="input-custom w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-golden transition-all duration-200"
+                >
+                  <option value="">{USER_STRINGS.genre.placeholder}</option>
+                  {renderOptions(USER_STRINGS.genre.options)}
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="characterName" className="block text-sm font-semibold text-deep-mahogany mb-3">
+                  {USER_STRINGS.characterName.label}
+                </label>
+                <input
+                  type="text"
+                  id="characterName"
+                  name="characterName"
+                  value={formData.characterName}
+                  onChange={validateCharacterName}
+                  pattern={USER_STRINGS.characterName.pattern}
+                  title={USER_STRINGS.characterName.title}
+                  maxLength={USER_STRINGS.characterName.maxLength}
+                  required
+                  className="input-custom w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-golden transition-all duration-200"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="role" className="block text-sm font-semibold text-deep-mahogany mb-3">
+                  {USER_STRINGS.role.label}
+                </label>
+                <select
+                  id="role"
+                  name="role"
+                  value={formData.role}
+                  onChange={handleInputChange}
+                  required
+                  className="input-custom w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-golden transition-all duration-200"
+                >
+                  <option value="">{USER_STRINGS.role.placeholder}</option>
+                  {renderOptions(USER_STRINGS.role.options)}
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="setting" className="block text-sm font-semibold text-deep-mahogany mb-3">
+                  {USER_STRINGS.setting.label}
+                </label>
+                <select
+                  id="setting"
+                  name="setting"
+                  value={formData.setting}
+                  onChange={handleInputChange}
+                  required
+                  className="input-custom w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-golden transition-all duration-200"
+                >
+                  <option value="">{USER_STRINGS.setting.placeholder}</option>
+                  {renderOptions(USER_STRINGS.setting.options)}
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="tone" className="block text-sm font-semibold text-deep-mahogany mb-3">
+                  {USER_STRINGS.tone.label}
+                </label>
+                <select
+                  id="tone"
+                  name="tone"
+                  value={formData.tone}
+                  onChange={handleInputChange}
+                  required
+                  className="input-custom w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-golden transition-all duration-200"
+                >
+                  <option value="">{USER_STRINGS.tone.placeholder}</option>
+                  {renderOptions(USER_STRINGS.tone.options)}
+                </select>
+              </div>
+
+              <div className="bg-warm-beige p-4 rounded-lg border border-light-gold">
+                <div className="flex items-center space-x-3">
+                  <input
+                    type="checkbox"
+                    id="plotTwist"
+                    name="plotTwist"
+                    checked={formData.plotTwist}
+                    onChange={handleInputChange}
+                    className="w-5 h-5 text-golden border-2 border-saddle-brown rounded focus:ring-golden focus:ring-2"
+                  />
+                  <label htmlFor="plotTwist" className="text-sm font-semibold text-rich-brown">
+                    {USER_STRINGS.plotTwist.checkboxLabel}
+                  </label>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isLoading || apiCalls === 0}
+                className="btn-primary w-full font-semibold py-4 px-6 rounded-lg transition-all duration-200 ease-in-out transform hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-golden focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
               >
-                <option value="">{USER_STRINGS.genre.placeholder}</option>
-                {renderOptions(USER_STRINGS.genre.options)}
-              </select>
-            </div>
-
-            <div>
-              <label htmlFor="characterName" className="block text-sm font-medium text-gray-700 mb-2">
-                {USER_STRINGS.characterName.label}
-              </label>
-              <input
-                type="text"
-                id="characterName"
-                name="characterName"
-                value={formData.characterName}
-                onChange={validateCharacterName}
-                pattern={USER_STRINGS.characterName.pattern}
-                title={USER_STRINGS.characterName.title}
-                maxLength={USER_STRINGS.characterName.maxLength}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-2">
-                {USER_STRINGS.role.label}
-              </label>
-              <select
-                id="role"
-                name="role"
-                value={formData.role}
-                onChange={handleInputChange}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              >
-                <option value="">{USER_STRINGS.role.placeholder}</option>
-                {renderOptions(USER_STRINGS.role.options)}
-              </select>
-            </div>
-
-            <div>
-              <label htmlFor="setting" className="block text-sm font-medium text-gray-700 mb-2">
-                {USER_STRINGS.setting.label}
-              </label>
-              <select
-                id="setting"
-                name="setting"
-                value={formData.setting}
-                onChange={handleInputChange}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              >
-                <option value="">{USER_STRINGS.setting.placeholder}</option>
-                {renderOptions(USER_STRINGS.setting.options)}
-              </select>
-            </div>
-
-            <div>
-              <label htmlFor="tone" className="block text-sm font-medium text-gray-700 mb-2">
-                {USER_STRINGS.tone.label}
-              </label>
-              <select
-                id="tone"
-                name="tone"
-                value={formData.tone}
-                onChange={handleInputChange}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              >
-                <option value="">{USER_STRINGS.tone.placeholder}</option>
-                {renderOptions(USER_STRINGS.tone.options)}
-              </select>
-            </div>
-
-            <div className="flex items-center space-x-3">
-              <input
-                type="checkbox"
-                id="plotTwist"
-                name="plotTwist"
-                checked={formData.plotTwist}
-                onChange={handleInputChange}
-                className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
-              />
-              <label htmlFor="plotTwist" className="text-sm font-medium text-gray-700">
-                {USER_STRINGS.plotTwist.checkboxLabel}
-              </label>
-            </div>
-
-            <button
-              type="submit"
-              disabled={isLoading || apiCalls === 0}
-              className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-medium py-3 px-4 rounded-md transition duration-200 ease-in-out transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-            >
-              {isLoading ? 'Generating...' : USER_STRINGS.generateButton}
-            </button>
-          </form>
+                {isLoading ? (
+                  <div className="flex items-center justify-center">
+                    <div className="w-5 h-5 border-2 border-warm-cream border-t-transparent rounded-full animate-spin mr-3"></div>
+                    Generating...
+                  </div>
+                ) : (
+                  USER_STRINGS.generateButton
+                )}
+              </button>
+            </form>
+          </div>
         </div>
 
         {generatedStory && (
