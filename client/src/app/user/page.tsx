@@ -26,6 +26,7 @@ const APP_DOMAIN = process.env.NEXT_PUBLIC_APP_DOMAIN;
 
 export default function StoryGeneratorPage() {
   const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [apiCalls, setApiCalls] = useState<number>(0);
   const [generatedStory, setGeneratedStory] = useState<StoryData | null>(null);
@@ -145,6 +146,41 @@ export default function StoryGeneratorPage() {
       alert(USER_STRINGS.errors.generic + (error as Error).message);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleSaveStory = async () => {
+    if (!generatedStory) return;
+
+    try {
+      setIsSaving(true);
+      
+      const storyContent = generatedStory.paragraphs.join('\n\n');
+      const tags = [formData.genre, formData.tone, formData.setting].filter(Boolean);
+
+      const response = await fetch(`${APP_DOMAIN}/api/v1/createStory`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: generatedStory.title,
+          content: storyContent,
+          tags: tags
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save story');
+      }
+
+      const data = await response.json();
+      alert('Story saved successfully!');
+    } catch (error) {
+      alert('Error saving story: ' + (error as Error).message);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -326,16 +362,70 @@ export default function StoryGeneratorPage() {
         </div>
 
         {generatedStory && (
-          <div className="max-w-2xl mx-auto mt-8 bg-white rounded-lg shadow-lg p-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">
-              {generatedStory.title}
-            </h2>
-            <div className="space-y-4">
-              {generatedStory.paragraphs.map((paragraph, index) => (
-                <p key={index} className="text-gray-700 leading-relaxed">
-                  {paragraph}
-                </p>
-              ))}
+          <div className="max-w-4xl mx-auto mt-12">
+            <div className="bg-saddle-brown rounded-t-xl p-8 text-warm-cream shadow-2xl relative">
+              <button
+                onClick={handleSaveStory}
+                disabled={isSaving}
+                className="absolute top-4 right-4 flex items-center space-x-2 bg-golden hover:bg-light-gold text-deep-mahogany px-4 py-2 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 font-medium disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              >
+                {isSaving ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-deep-mahogany border-t-transparent rounded-full animate-spin"></div>
+                    <span>Saving...</span>
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6a1 1 0 10-2 0v5.586l-1.293-1.293zM5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
+                    </svg>
+                    <span>Save Story</span>
+                  </>
+                )}
+              </button>
+
+              <div className="text-center">
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-golden bg-opacity-20 rounded-full mb-6 border-2 border-golden">
+                  <svg className="w-10 h-10 text-golden" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <h2 className="text-4xl font-bold mb-4 font-dancing">
+                  {generatedStory.title}
+                </h2>
+                <div className="w-32 h-1 bg-golden mx-auto rounded-full"></div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-b-xl shadow-2xl border-2 border-warm-beige">
+              <div className="p-8 md:p-12">
+                <div className="prose prose-lg max-w-none">
+                  {generatedStory.paragraphs.map((paragraph, index) => (
+                    <div key={index} className="mb-8 last:mb-0">
+                      {index === 0 && (
+                        <div className="float-left text-7xl font-serif text-golden leading-none pr-4 pt-2 drop-shadow-sm">
+                          {paragraph.charAt(0)}
+                        </div>
+                      )}
+                      <p className={`text-deep-mahogany leading-relaxed text-lg ${index === 0 ? 'first-letter:hidden' : ''}`}>
+                        {index === 0 ? paragraph.slice(1) : paragraph}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8 flex justify-center">
+              <button
+                onClick={() => setGeneratedStory(null)}
+                className="flex items-center space-x-3 bg-rich-brown hover:bg-deep-mahogany text-warm-cream px-6 py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 font-medium"
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+                <span>Create New Story</span>
+              </button>
             </div>
           </div>
         )}
