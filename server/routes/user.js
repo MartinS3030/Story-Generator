@@ -269,6 +269,8 @@ router.delete(
  *                     type: string
  *                   content:
  *                     type: string
+ *                   is_favorite:
+ *                     type: boolean
  *                   created_at:
  *                     type: string
  *                     format: date-time

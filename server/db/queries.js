@@ -280,6 +280,7 @@ const getStoriesForUser = (userId, callback) => {
       user_id: row.user_id,
       title: row.title,
       content: row.content,
+      is_favorite: row.is_favorite,
       created_at: row.created_at,
       tags: row.tags ? row.tags.split(',') : []
     }));
