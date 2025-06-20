@@ -26,7 +26,7 @@ const Navbar: React.FC<NavbarProps> = ({ apicalls, id, username, onUsernameUpdat
       });
       
       if (response.ok) {
-        router.push('/login');
+        router.push('/authenticate');
       } else {
         alert(NAVBAR_STRINGS.LOGOUT_FAILED);
       }

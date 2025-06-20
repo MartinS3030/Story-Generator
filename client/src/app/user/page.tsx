@@ -57,11 +57,11 @@ export default function StoryGeneratorPage() {
         setUserData({ id: data.id, username: data.username });
       } else {
         console.log("else")
-        router.push('/login');
+        router.push('/authenticate');
       }
     } catch (error) {
       console.error("Error:", error);
-      router.push('/login');
+      router.push('/authenticate');
     }
   };
 
@@ -118,21 +118,33 @@ export default function StoryGeneratorPage() {
     try {
       setIsLoading(true);
 
-      const response = await fetch(`${APP_DOMAIN}/api/v1/generate`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ prompt }),
-      });
+      // const response = await fetch(`${APP_DOMAIN}/api/v1/generate`, {
+      //   method: "POST",
+      //   credentials: "include",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({ prompt }),
+      // });
 
-      if (!response.ok) {
-        throw new Error(USER_STRINGS.errors.storyGeneration);
-      }
+      // if (!response.ok) {
+      //   throw new Error(USER_STRINGS.errors.storyGeneration);
+      // }
 
-      const data = await response.json();
-      const parsedData = JSON.parse(data.generatedText);
+      // const data = await response.json();
+      // const parsedData = JSON.parse(data.generatedText);
+
+      const parsedData = {
+  "title": "The Clockmaker's Secret",
+  "paragraphs": [
+    "In a misty Victorian town nestled between the hills, time moved differently. The fog rolled in thick every morning, muffling the clinks and ticks that spilled from an old clockmaker’s shop on the edge of Rosewood Street.",
+    "The main character, Elara Wren, was a meticulous and reclusive clockmaker, known for crafting pieces that kept perfect time even when the rest of the world seemed to falter. Her role in the town was modest, yet people often whispered about the strange energies surrounding her workbench.",
+    "One stormy evening, a wealthy nobleman visited her shop, requesting a clock that could mark more than just hours—it needed to record fate itself. Intrigued and disturbed, Elara accepted, diving into blueprints and long-forgotten books.",
+    "As she built the clock, time around her bent—flowers bloomed in the dead of winter, and townsfolk experienced déjà vu. The deeper Elara went, the more she realized that the gears of her creation mirrored something ancient and powerful.",
+    "The plot twist came when Elara discovered that the clock wasn’t meant to record fate—it was meant to rewrite it. With every tick, history shifted. She had unknowingly been chosen by a hidden society to resurrect the lost art of temporal manipulation.",
+    "Faced with the decision to continue building the device or dismantle it forever, Elara chose a third path. She locked it away, entrusting the key to a child who would one day face the same choice. The town returned to normal—mostly—but Rosewood Street never quite ticked the same again."
+  ]
+}
       
       setGeneratedStory({
         title: parsedData.title,
@@ -230,8 +242,6 @@ export default function StoryGeneratorPage() {
           <h1 className="text-5xl font-bold text-deep-mahogany mb-4 font-dancing">
             {USER_STRINGS.pageTitle}
           </h1>
-          <div className="w-32 h-1 bg-gradient-to-r from-saddle-brown via-golden to-saddle-brown mx-auto rounded-full"></div>
-          <p className="text-rich-brown mt-4 text-lg">Craft your perfect story with our AI-powered generator</p>
         </div>
 
         <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-2xl border border-warm-beige overflow-hidden">
@@ -393,7 +403,6 @@ export default function StoryGeneratorPage() {
                 <h2 className="text-4xl font-bold mb-4 font-dancing">
                   {generatedStory.title}
                 </h2>
-                <div className="w-32 h-1 bg-golden mx-auto rounded-full"></div>
               </div>
             </div>
 

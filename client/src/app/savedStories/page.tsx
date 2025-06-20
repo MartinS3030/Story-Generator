@@ -63,11 +63,11 @@ export default function SavedStoriesPage() {
         const data = await response.json();
         setUserData({ id: data.id, username: data.username });
       } else {
-        router.push('/login');
+        router.push('/authenticate');
       }
     } catch (error) {
       console.error("Error:", error);
-      router.push('/login');
+      router.push('/authenticate');
     }
   };
 
@@ -280,7 +280,7 @@ export default function SavedStoriesPage() {
   };
 
   const navigateToGenerator = () => {
-    router.push('/story-generator');
+    router.push('/user');
   };
 
   if (isLoading) {

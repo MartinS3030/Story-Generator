@@ -54,7 +54,7 @@ export default function SignupForm({ onToggleMode }: SignupFormProps) {
     return Object.keys(errors).length === 0;
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLButtonElement>): Promise<void> => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     setError('');
     setSuccess('');
@@ -137,7 +137,7 @@ export default function SignupForm({ onToggleMode }: SignupFormProps) {
         </h2>
       </div>
       
-      <div className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="firstName" className="block text-sm font-medium text-warm-beige mb-1">
             {SIGNUP_STRINGS.LABEL_FIRST_NAME}
@@ -227,14 +227,13 @@ export default function SignupForm({ onToggleMode }: SignupFormProps) {
         )}
         
         <button
-          type="button"
-          onClick={handleSubmit}
+          type="submit"
           disabled={isLoading || !!success}
           className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoading ? 'Creating Account...' : SIGNUP_STRINGS.BUTTON_SIGNUP}
         </button>
-      </div>
+      </form>
       
       <div className="mt-6 text-center text-sm">
         <span className="text-warm-beige">{SIGNUP_STRINGS.ACCOUNT_EXISTS} </span>

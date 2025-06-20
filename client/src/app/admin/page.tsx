@@ -56,11 +56,11 @@ export default function AdminPage() {
           setUsers(userData.users);
         }
       } else {
-        router.push('/login');
+        router.push('/authenticate');
       }
     } catch (error) {
       console.error('Error:', error);
-      router.push('/login');
+      router.push('/authenticate');
     } finally {
       setLoading(false);
     }
@@ -92,7 +92,7 @@ export default function AdminPage() {
       });
       
       if (response.ok) {
-        router.push('/login');
+        router.push('/authenticate');
       } else {
         alert(ADMIN_STRINGS.LOGOUT_FAILED);
       }
