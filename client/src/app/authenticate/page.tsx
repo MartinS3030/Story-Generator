@@ -16,7 +16,7 @@ export default function Page() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-deep-mahogany py-8 px-4 sm:px-6 lg:px-8">
-      <h1 className="text-3xl text-center text-golden font-dancing mb-8">
+      <h1 className="text-4xl md:text-5xl font-bold text-golden mb-4 font-dancing">
         {pageTitle}
       </h1>
 

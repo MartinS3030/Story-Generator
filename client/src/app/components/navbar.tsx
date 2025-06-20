@@ -88,7 +88,7 @@ const Navbar: React.FC<NavbarProps> = ({ apicalls, id, username, onUsernameUpdat
       <nav className="bg-gradient-to-r from-deep-mahogany via-rich-brown to-saddle-brown shadow-lg border-b-2 border-golden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-18">
-            <div className="flex-shrink-0">
+            <div className="flex items-center space-x-6">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-golden rounded-full flex items-center justify-center shadow-md">
                   <svg className="w-5 h-5 text-deep-mahogany" fill="currentColor" viewBox="0 0 20 20">
@@ -96,18 +96,16 @@ const Navbar: React.FC<NavbarProps> = ({ apicalls, id, username, onUsernameUpdat
                   </svg>
                 </div>
                 <div>
+                  <p className="text-light-gold text-sm font-medium">
+                    API calls left
+                  </p>
                   <span className="text-warm-cream font-bold text-lg">
                     {apicalls}
                   </span>
-                  <p className="text-light-gold text-sm">
-                    {NAVBAR_STRINGS.API_CALLS_LEFT.replace(`${apicalls}`, '').trim()}
-                  </p>
                 </div>
               </div>
-            </div>
 
-            <div className="hidden md:block">
-              <div className="flex items-center space-x-4">
+              <div className="hidden md:flex items-center space-x-4">
                 <button
                   onClick={handleGenerateStory}
                   className="bg-transparent border-2 border-light-gold hover:bg-light-gold hover:text-deep-mahogany text-light-gold px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105 flex items-center space-x-2"
@@ -128,38 +126,40 @@ const Navbar: React.FC<NavbarProps> = ({ apicalls, id, username, onUsernameUpdat
                   </svg>
                   <span>Saved Stories</span>
                 </button>
-
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-light-gold rounded-full flex items-center justify-center">
-                    <svg className="w-4 h-4 text-deep-mahogany" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <span className="text-warm-cream font-medium">
-                    {NAVBAR_STRINGS.HELLO_USER}{currentUsername}!
-                  </span>
-                </div>
-                
-                <button
-                  onClick={() => setIsModalOpen(true)}
-                  className="bg-golden hover:bg-light-gold text-deep-mahogany px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105 flex items-center space-x-2"
-                >
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                  </svg>
-                  <span>{NAVBAR_STRINGS.CHANGE_USERNAME}</span>
-                </button>
-                
-                <button
-                  onClick={handleLogout}
-                  className="bg-transparent border-2 border-warm-cream hover:bg-warm-cream hover:text-deep-mahogany text-warm-cream px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105 flex items-center space-x-2"
-                >
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clipRule="evenodd" />
-                  </svg>
-                  <span>{NAVBAR_STRINGS.LOGOUT}</span>
-                </button>
               </div>
+            </div>
+
+            <div className="hidden md:flex items-center space-x-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-light-gold rounded-full flex items-center justify-center">
+                  <svg className="w-4 h-4 text-deep-mahogany" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <span className="text-warm-cream font-medium">
+                  {NAVBAR_STRINGS.HELLO_USER}{currentUsername}!
+                </span>
+              </div>
+              
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="bg-golden hover:bg-light-gold text-deep-mahogany px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105 flex items-center space-x-2"
+              >
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                </svg>
+                <span>{NAVBAR_STRINGS.CHANGE_USERNAME}</span>
+              </button>
+              
+              <button
+                onClick={handleLogout}
+                className="bg-transparent border-2 border-warm-cream hover:bg-warm-cream hover:text-deep-mahogany text-warm-cream px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105 flex items-center space-x-2"
+              >
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clipRule="evenodd" />
+                </svg>
+                <span>{NAVBAR_STRINGS.LOGOUT}</span>
+              </button>
             </div>
 
             <div className="md:hidden">
@@ -205,7 +205,7 @@ const Navbar: React.FC<NavbarProps> = ({ apicalls, id, username, onUsernameUpdat
                   {NAVBAR_STRINGS.HELLO_USER}{currentUsername}!
                 </span>
               </div>
-              
+
               <button
                 onClick={() => {
                   handleGenerateStory();
