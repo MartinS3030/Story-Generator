@@ -11,6 +11,7 @@ interface Story {
   content: string;
   created_at: string;
   tags: string[];
+  is_favorite?: boolean;
 }
 
 interface UserData {
@@ -32,6 +33,8 @@ export default function SavedStoriesPage() {
   const [dateRange, setDateRange] = useState({ start: '', end: '' });
   const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'alphabetical'>('newest');
   const [availableTags, setAvailableTags] = useState<string[]>([]);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -84,39 +87,102 @@ export default function SavedStoriesPage() {
     }
   };
 
-    const fetchStories = async () => {
+  const fetchStories = async () => {
     try {
-        setIsLoading(true);
-        const response = await fetch(`${APP_DOMAIN}/api/v1/getStories`, {
+      setIsLoading(true);
+      const response = await fetch(`${APP_DOMAIN}/api/v1/getStories`, {
         method: "GET",
         credentials: "include",
-        });
+      });
 
-        if (response.status === 200) {
+      if (response.status === 200) {
         const data = await response.json();
         setStories(data);
         
         const allTags: string[] = [];
         data.forEach((story: Story) => {
-            if (story.tags && Array.isArray(story.tags)) {
+          if (story.tags && Array.isArray(story.tags)) {
             story.tags.forEach((tag) => {
-                if (typeof tag === 'string') {
+              if (typeof tag === 'string') {
                 allTags.push(tag);
-                }
+              }
             });
-            }
+          }
         });
         const uniqueTags = Array.from(new Set(allTags)).sort();
         setAvailableTags(uniqueTags);
-        } else {
+      } else {
         console.error("Failed to fetch stories");
-        }
+      }
     } catch (error) {
-        console.error("Error fetching stories:", error);
+      console.error("Error fetching stories:", error);
     } finally {
-        setIsLoading(false);
+      setIsLoading(false);
     }
-    };
+  };
+
+  const handleDeleteStory = async (storyId: number) => {
+    if (!deleteConfirmId) {
+      setDeleteConfirmId(storyId);
+      return;
+    }
+
+    if (deleteConfirmId !== storyId) {
+      setDeleteConfirmId(storyId);
+      return;
+    }
+
+    setIsDeleting(true);
+    try {
+      const response = await fetch(`${APP_DOMAIN}/api/v1/deleteStory/${storyId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      if (response.status === 200) {
+        setStories(prev => prev.filter(story => story.id !== storyId));
+        setDeleteConfirmId(null);
+        console.log("Story deleted successfully");
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to delete story:", errorData.message);
+      }
+    } catch (error) {
+      console.error("Error deleting story:", error);
+    } finally {
+      setIsDeleting(false);
+      setDeleteConfirmId(null);
+    }
+  };
+
+  const handleToggleFavorite = async (storyId: number, currentFavoriteStatus: boolean) => {
+    const newFavoriteStatus = !currentFavoriteStatus;
+    
+    try {
+      const response = await fetch(`${APP_DOMAIN}/api/v1/favorite/${storyId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ isFavorite: newFavoriteStatus }),
+      });
+
+      if (response.status === 200) {
+        setStories(prev => prev.map(story => 
+          story.id === storyId 
+            ? { ...story, is_favorite: newFavoriteStatus }
+            : story
+        ));
+        console.log(`Story ${newFavoriteStatus ? 'added to' : 'removed from'} favorites`);
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to update favorite status:", errorData.message);
+      }
+    } catch (error) {
+      console.error("Error updating favorite status:", error);
+    }
+  };
 
   const handleUsernameUpdate = (newUsername: string) => {
     setUserData(prev => prev ? { ...prev, username: newUsername } : null);
@@ -411,16 +477,26 @@ export default function SavedStoriesPage() {
                 {filteredStories.map((story) => {
                 const isExpanded = expandedStories.has(story.id);
                 const contentToShow = isExpanded ? story.content : getPreviewText(story.content);
+                const isFavorite = story.is_favorite || false;
                 
                 return (
                   <div key={story.id} className="bg-white rounded-xl shadow-lg border border-warm-beige hover:shadow-xl transition-all duration-300 overflow-hidden group">
                     <div className="bg-gradient-to-r from-saddle-brown to-rich-brown p-4">
-                      <h3 className="text-lg font-bold text-warm-cream line-clamp-2 group-hover:text-golden transition-colors duration-200">
-                        {story.title}
-                      </h3>
-                      <p className="text-warm-beige text-sm mt-1">
-                        {formatDate(story.created_at)}
-                      </p>
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h3 className="text-lg font-bold text-warm-cream line-clamp-2 group-hover:text-golden transition-colors duration-200">
+                            {story.title}
+                          </h3>
+                          <p className="text-warm-beige text-sm mt-1">
+                            {formatDate(story.created_at)}
+                          </p>
+                        </div>
+                        {isFavorite && (
+                          <svg className="w-5 h-5 text-golden flex-shrink-0 ml-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+                          </svg>
+                        )}
+                      </div>
                     </div>
 
                     <div className="p-6">
@@ -460,24 +536,62 @@ export default function SavedStoriesPage() {
 
                         <div className="flex items-center space-x-3">
                           <button
-                            className="p-2 text-saddle-brown hover:text-golden transition-colors duration-200 hover:bg-warm-beige rounded-full"
-                            title="Add to favorites"
+                            onClick={() => handleToggleFavorite(story.id, isFavorite)}
+                            className={`p-2 transition-colors duration-200 hover:bg-warm-beige rounded-full ${
+                              isFavorite 
+                                ? 'text-red-500 hover:text-red-600' 
+                                : 'text-saddle-brown hover:text-golden'
+                            }`}
+                            title={isFavorite ? "Remove from favorites" : "Add to favorites"}
                           >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-5 h-5" fill={isFavorite ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                             </svg>
                           </button>
 
                           <button
-                            className="p-2 text-saddle-brown hover:text-red-600 transition-colors duration-200 hover:bg-red-50 rounded-full"
-                            title="Delete story"
+                            onClick={() => handleDeleteStory(story.id)}
+                            disabled={isDeleting}
+                            className={`p-2 transition-colors duration-200 rounded-full ${
+                              deleteConfirmId === story.id
+                                ? 'bg-red-100 text-red-600 hover:bg-red-200'
+                                : 'text-saddle-brown hover:text-red-600 hover:bg-red-50'
+                            } ${isDeleting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            title={deleteConfirmId === story.id ? "Click again to confirm deletion" : "Delete story"}
                           >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
+                            {isDeleting && deleteConfirmId === story.id ? (
+                              <div className="w-5 h-5 border-2 border-red-600 border-t-transparent rounded-full animate-spin"></div>
+                            ) : (
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                            )}
                           </button>
                         </div>
                       </div>
+
+                      {deleteConfirmId === story.id && (
+                        <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+                          <p className="text-sm text-red-700 mb-2">
+                            Are you sure you want to delete this story? This action cannot be undone.
+                          </p>
+                          <div className="flex space-x-2">
+                            <button
+                              onClick={() => handleDeleteStory(story.id)}
+                              disabled={isDeleting}
+                              className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 disabled:opacity-50"
+                            >
+                              {isDeleting ? 'Deleting...' : 'Yes, Delete'}
+                            </button>
+                            <button
+                              onClick={() => setDeleteConfirmId(null)}
+                              className="px-3 py-1 bg-gray-300 text-gray-700 text-sm rounded hover:bg-gray-400"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
