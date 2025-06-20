@@ -22,6 +22,7 @@ export default function Home() {
           router.push('/authenticate');
         }
       } catch (error) {
+        console.log(error);
         router.push('/authenticate');
       }
     };
