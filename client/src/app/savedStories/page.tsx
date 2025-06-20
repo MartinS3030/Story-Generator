@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '../components/navbar';
+import { SAVED_STORIES_STRINGS } from '../lang/en/messages'
 
 interface Story {
   id: number;
@@ -112,10 +113,10 @@ export default function SavedStoriesPage() {
         const uniqueTags = Array.from(new Set(allTags)).sort();
         setAvailableTags(uniqueTags);
       } else {
-        console.error("Failed to fetch stories");
+        console.error(SAVED_STORIES_STRINGS.FAILED_TO_FETCH);
       }
     } catch (error) {
-      console.error("Error fetching stories:", error);
+      console.error(SAVED_STORIES_STRINGS.CONSOLE.ERROR_FETCHING, error);
     } finally {
       setIsLoading(false);
     }
@@ -142,13 +143,13 @@ export default function SavedStoriesPage() {
       if (response.status === 200) {
         setStories(prev => prev.filter(story => story.id !== storyId));
         setDeleteConfirmId(null);
-        console.log("Story deleted successfully");
+        console.log(SAVED_STORIES_STRINGS.CONSOLE.STORY_DELETED);
       } else {
         const errorData = await response.json();
-        console.error("Failed to delete story:", errorData.message);
+        console.error(SAVED_STORIES_STRINGS.FAILED_TO_DELETE, errorData.message);
       }
     } catch (error) {
-      console.error("Error deleting story:", error);
+      console.error(SAVED_STORIES_STRINGS.CONSOLE.ERROR_DELETING, error);
     } finally {
       setIsDeleting(false);
       setDeleteConfirmId(null);
@@ -174,13 +175,14 @@ export default function SavedStoriesPage() {
             ? { ...story, is_favorite: newFavoriteStatus }
             : story
         ));
-        console.log(`Story ${newFavoriteStatus ? 'added to' : 'removed from'} favorites`);
+        const action = newFavoriteStatus ? SAVED_STORIES_STRINGS.FAVORITE_ADDED : SAVED_STORIES_STRINGS.FAVORITE_REMOVED;
+        console.log(SAVED_STORIES_STRINGS.CONSOLE.FAVORITE_UPDATED(`${action} ${SAVED_STORIES_STRINGS.FAVORITES_TEXT}`));
       } else {
         const errorData = await response.json();
-        console.error("Failed to update favorite status:", errorData.message);
+        console.error(SAVED_STORIES_STRINGS.FAILED_TO_UPDATE_FAVORITE, errorData.message);
       }
     } catch (error) {
-      console.error("Error updating favorite status:", error);
+      console.error(SAVED_STORIES_STRINGS.CONSOLE.ERROR_FAVORITE, error);
     }
   };
 
@@ -297,7 +299,7 @@ export default function SavedStoriesPage() {
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="flex flex-col items-center text-deep-mahogany">
             <div className="w-16 h-16 border-4 border-saddle-brown border-t-golden rounded-full animate-spin mb-4"></div>
-            <p className="text-lg font-medium">Loading your stories...</p>
+            <p className="text-lg font-medium">{SAVED_STORIES_STRINGS.LOADING_MESSAGE}</p>
           </div>
         </div>
       </div>
@@ -318,7 +320,7 @@ export default function SavedStoriesPage() {
       <div className="py-8 px-4">
         <div className="text-center mb-12 pt-8">
           <h1 className="text-4xl md:text-5xl font-bold text-deep-mahogany mb-4 font-dancing">
-            Your Saved Stories
+            {SAVED_STORIES_STRINGS.PAGE_TITLE}
           </h1>
         </div>
 
@@ -330,9 +332,9 @@ export default function SavedStoriesPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                 </svg>
               </div>
-              <h2 className="text-2xl font-bold text-deep-mahogany mb-4">No Stories Yet</h2>
+              <h2 className="text-2xl font-bold text-deep-mahogany mb-4">{SAVED_STORIES_STRINGS.NO_STORIES_TITLE}</h2>
               <p className="text-rich-brown mb-8 text-lg">
-                You haven't saved any stories yet. Start creating your first story!
+                {SAVED_STORIES_STRINGS.NO_STORIES_MESSAGE}
               </p>
               <button
                 onClick={navigateToGenerator}
@@ -341,7 +343,7 @@ export default function SavedStoriesPage() {
                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
                 </svg>
-                <span>Create Your First Story</span>
+                <span>{SAVED_STORIES_STRINGS.CREATE_FIRST_STORY_BUTTON}</span>
               </button>
             </div>
           </div>
@@ -350,7 +352,7 @@ export default function SavedStoriesPage() {
             <div className="bg-white rounded-xl shadow-lg border border-warm-beige p-6 mb-8">
               <div className="mb-6">
                 <label htmlFor="search" className="block text-sm font-semibold text-deep-mahogany mb-3">
-                  Search Stories
+                  {SAVED_STORIES_STRINGS.SEARCH_LABEL}
                 </label>
                 <div className="relative">
                   <input
@@ -358,7 +360,7 @@ export default function SavedStoriesPage() {
                     id="search"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Search by story title..."
+                    placeholder={SAVED_STORIES_STRINGS.SEARCH_PLACEHOLDER}
                     className="w-full px-4 py-3 pl-12 border-2 border-warm-beige rounded-lg focus:ring-2 focus:ring-golden focus:border-golden transition-all duration-200"
                   />
                   <svg className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-saddle-brown" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -370,7 +372,7 @@ export default function SavedStoriesPage() {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div>
                   <label className="block text-sm font-semibold text-deep-mahogany mb-3">
-                    Filter by Tags
+                    {SAVED_STORIES_STRINGS.FILTER_BY_TAGS_LABEL}
                   </label>
                   <div className="max-h-32 overflow-y-auto border border-warm-beige rounded-lg p-3 bg-warm-cream">
                     {availableTags.length > 0 ? (
@@ -388,18 +390,18 @@ export default function SavedStoriesPage() {
                         ))}
                       </div>
                     ) : (
-                      <p className="text-sm text-saddle-brown">No tags available</p>
+                      <p className="text-sm text-saddle-brown">{SAVED_STORIES_STRINGS.NO_TAGS_AVAILABLE}</p>
                     )}
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-sm font-semibold text-deep-mahogany mb-3">
-                    Date Range
+                    {SAVED_STORIES_STRINGS.DATE_RANGE_LABEL}
                   </label>
                   <div className="space-y-3">
                     <div>
-                      <label htmlFor="startDate" className="block text-xs text-saddle-brown mb-1">From</label>
+                      <label htmlFor="startDate" className="block text-xs text-saddle-brown mb-1">{SAVED_STORIES_STRINGS.DATE_FROM_LABEL}</label>
                       <input
                         type="date"
                         id="startDate"
@@ -409,7 +411,7 @@ export default function SavedStoriesPage() {
                       />
                     </div>
                     <div>
-                      <label htmlFor="endDate" className="block text-xs text-saddle-brown mb-1">To</label>
+                      <label htmlFor="endDate" className="block text-xs text-saddle-brown mb-1">{SAVED_STORIES_STRINGS.DATE_TO_LABEL}</label>
                       <input
                         type="date"
                         id="endDate"
@@ -423,7 +425,7 @@ export default function SavedStoriesPage() {
 
                 <div>
                   <label htmlFor="sortBy" className="block text-sm font-semibold text-deep-mahogany mb-3">
-                    Sort By
+                    {SAVED_STORIES_STRINGS.SORT_BY_LABEL}
                   </label>
                   <select
                     id="sortBy"
@@ -431,16 +433,16 @@ export default function SavedStoriesPage() {
                     onChange={(e) => setSortBy(e.target.value as 'newest' | 'oldest' | 'alphabetical')}
                     className="w-full px-4 py-3 border-2 border-warm-beige rounded-lg focus:ring-2 focus:ring-golden focus:border-golden transition-all duration-200 bg-white"
                   >
-                    <option value="newest">Newest First</option>
-                    <option value="oldest">Oldest First</option>
-                    <option value="alphabetical">Alphabetical (A-Z)</option>
+                    <option value="newest">{SAVED_STORIES_STRINGS.SORT_OPTIONS.NEWEST}</option>
+                    <option value="oldest">{SAVED_STORIES_STRINGS.SORT_OPTIONS.OLDEST}</option>
+                    <option value="alphabetical">{SAVED_STORIES_STRINGS.SORT_OPTIONS.ALPHABETICAL}</option>
                   </select>
                 </div>
               </div>
 
               <div className="mt-6 flex flex-col sm:flex-row items-center justify-between space-y-3 sm:space-y-0">
                 <div className="text-sm text-saddle-brown">
-                  Showing {filteredStories.length} of {stories.length} stories
+                  {SAVED_STORIES_STRINGS.SHOWING_RESULTS(filteredStories.length, stories.length)}
                 </div>
                 <button
                   onClick={clearFilters}
@@ -449,7 +451,7 @@ export default function SavedStoriesPage() {
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
-                  <span>Clear All Filters</span>
+                  <span>{SAVED_STORIES_STRINGS.CLEAR_ALL_FILTERS}</span>
                 </button>
               </div>
             </div>
@@ -461,13 +463,13 @@ export default function SavedStoriesPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-deep-mahogany mb-2">No Stories Found</h3>
-                <p className="text-rich-brown mb-4">No stories match your current filters.</p>
+                <h3 className="text-xl font-bold text-deep-mahogany mb-2">{SAVED_STORIES_STRINGS.NO_RESULTS_TITLE}</h3>
+                <p className="text-rich-brown mb-4">{SAVED_STORIES_STRINGS.NO_RESULTS_MESSAGE}</p>
                 <button
                   onClick={clearFilters}
                   className="text-saddle-brown hover:text-rich-brown font-medium cursor-pointer"
                 >
-                  Clear filters to see all stories
+                  {SAVED_STORIES_STRINGS.CLEAR_FILTERS_SUGGESTION}
                 </button>
               </div>
             )}
@@ -524,7 +526,7 @@ export default function SavedStoriesPage() {
                           onClick={() => toggleStoryExpansion(story.id)}
                           className="flex items-center space-x-2 text-saddle-brown hover:text-rich-brown transition-colors duration-200 font-medium"
                         >
-                          <span>{isExpanded ? 'Show Less' : 'Read More'}</span>
+                          <span>{isExpanded ? SAVED_STORIES_STRINGS.SHOW_LESS : SAVED_STORIES_STRINGS.READ_MORE}</span>
                           <svg 
                             className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} 
                             fill="currentColor" 
@@ -542,7 +544,7 @@ export default function SavedStoriesPage() {
                                 ? 'text-red-500 hover:text-red-600' 
                                 : 'text-saddle-brown hover:text-golden'
                             }`}
-                            title={isFavorite ? "Remove from favorites" : "Add to favorites"}
+                            title={isFavorite ? SAVED_STORIES_STRINGS.REMOVE_FROM_FAVORITES : SAVED_STORIES_STRINGS.ADD_TO_FAVORITES}
                           >
                             <svg className="w-5 h-5" fill={isFavorite ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
@@ -557,7 +559,7 @@ export default function SavedStoriesPage() {
                                 ? 'bg-red-100 text-red-600 hover:bg-red-200'
                                 : 'text-saddle-brown hover:text-red-600 hover:bg-red-50'
                             } ${isDeleting ? 'opacity-50 cursor-not-allowed' : ''}`}
-                            title={deleteConfirmId === story.id ? "Click again to confirm deletion" : "Delete story"}
+                            title={deleteConfirmId === story.id ? SAVED_STORIES_STRINGS.CONFIRM_DELETE : SAVED_STORIES_STRINGS.DELETE_STORY}
                           >
                             {isDeleting && deleteConfirmId === story.id ? (
                               <div className="w-5 h-5 border-2 border-red-600 border-t-transparent rounded-full animate-spin"></div>
@@ -573,7 +575,7 @@ export default function SavedStoriesPage() {
                       {deleteConfirmId === story.id && (
                         <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
                           <p className="text-sm text-red-700 mb-2">
-                            Are you sure you want to delete this story? This action cannot be undone.
+                            {SAVED_STORIES_STRINGS.DELETE_CONFIRMATION_MESSAGE}
                           </p>
                           <div className="flex space-x-2">
                             <button
@@ -587,7 +589,7 @@ export default function SavedStoriesPage() {
                               onClick={() => setDeleteConfirmId(null)}
                               className="px-3 py-1 bg-gray-300 text-gray-700 text-sm rounded hover:bg-gray-400"
                             >
-                              Cancel
+                              {SAVED_STORIES_STRINGS.DELETE_CANCEL_BUTTON}
                             </button>
                           </div>
                         </div>
@@ -608,7 +610,7 @@ export default function SavedStoriesPage() {
                   <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
                   </svg>
-                  <span>Create New Story</span>
+                  <span>{SAVED_STORIES_STRINGS.CREATE_NEW_STORY_BUTTON}</span>
                 </button>
               </div>
             )}

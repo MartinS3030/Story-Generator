@@ -30,6 +30,15 @@ const SIGNUP_STRINGS = {
 const USER_STRINGS = {
   pageTitle: "Story Generator",
   loading: "Generating your story...",
+  storyConfigurationTitle: "Story Configuration",
+  generating: "Generating...",
+  saving: "Saving...",
+  saveStory: "Save Story",
+  createNewStory: "Create New Story",
+  storyGeneratedTitle: "Your Generated Story",
+  storySavedSuccess: "Story saved successfully!",
+  storySaveError: "Error saving story: ",
+  storySaveFailed: "Failed to save story",
   genre: {
     label: "Genre",
     placeholder: "Select a genre",
@@ -139,10 +148,71 @@ const ADMIN_STRINGS = {
   RESOURCE_FETCH_ERROR: 'Failed to fetch resource data'
 };
 
+const SAVED_STORIES_STRINGS = {
+  PAGE_TITLE: "Your Saved Stories",
+  LOADING_MESSAGE: "Loading your stories...",
+
+  NO_STORIES_TITLE: "No Stories Yet",
+  NO_STORIES_MESSAGE: "You haven't saved any stories yet. Start creating your first story!",
+  CREATE_FIRST_STORY_BUTTON: "Create Your First Story",
+
+  SEARCH_LABEL: "Search Stories",
+  SEARCH_PLACEHOLDER: "Search by story title...",
+  FILTER_BY_TAGS_LABEL: "Filter by Tags",
+  NO_TAGS_AVAILABLE: "No tags available",
+  DATE_RANGE_LABEL: "Date Range",
+  DATE_FROM_LABEL: "From",
+  DATE_TO_LABEL: "To",
+  SORT_BY_LABEL: "Sort By",
+  SORT_OPTIONS: {
+    NEWEST: "Newest First",
+    OLDEST: "Oldest First",
+    ALPHABETICAL: "Alphabetical (A-Z)"
+  },
+
+  SHOWING_RESULTS: (filtered, total) => `Showing ${filtered} of ${total} stories`,
+  CLEAR_ALL_FILTERS: "Clear All Filters",
+  NO_RESULTS_TITLE: "No Stories Found",
+  NO_RESULTS_MESSAGE: "No stories match your current filters.",
+  CLEAR_FILTERS_SUGGESTION: "Clear filters to see all stories",
+
+  SHOW_LESS: "Show Less",
+  READ_MORE: "Read More",
+  ADD_TO_FAVORITES: "Add to favorites",
+  REMOVE_FROM_FAVORITES: "Remove from favorites",
+  DELETE_STORY: "Delete story",
+  CONFIRM_DELETE: "Click again to confirm deletion",
+
+  DELETE_CONFIRMATION_MESSAGE: "Are you sure you want to delete this story? This action cannot be undone.",
+  DELETE_CONFIRM_BUTTON: "Yes, Delete",
+  DELETE_CANCEL_BUTTON: "Cancel",
+  DELETING: "Deleting...",
+
+  STORY_DELETED_SUCCESS: "Story deleted successfully",
+  FAVORITE_ADDED: "added to",
+  FAVORITE_REMOVED: "removed from",
+  FAVORITES_TEXT: "favorites",
+
+  FAILED_TO_FETCH: "Failed to fetch stories",
+  FAILED_TO_DELETE: "Failed to delete story:",
+  FAILED_TO_UPDATE_FAVORITE: "Failed to update favorite status:",
+  
+  CREATE_NEW_STORY_BUTTON: "Create New Story",
+  
+  CONSOLE: {
+    STORY_DELETED: "Story deleted successfully",
+    FAVORITE_UPDATED: (action) => `Story ${action} favorites`,
+    ERROR_FETCHING: "Error fetching stories:",
+    ERROR_DELETING: "Error deleting story:",
+    ERROR_FAVORITE: "Error updating favorite status:"
+  }
+};
+
 export {
     LOGIN_STRINGS,
     SIGNUP_STRINGS,
     USER_STRINGS,
     NAVBAR_STRINGS,
     ADMIN_STRINGS,
+    SAVED_STORIES_STRINGS,
 }
