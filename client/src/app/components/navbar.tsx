@@ -66,6 +66,7 @@ const Navbar: React.FC<NavbarProps> = ({ apicalls, id, username, onUsernameUpdat
         alert(userData.message || "User update failed");
       }
     } catch (error) {
+      console.log(error);
       alert(NAVBAR_STRINGS.UPDATE_ERROR);
     }
   };

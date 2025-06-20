@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, FormEvent } from 'react';
-import { useRouter } from 'next/navigation';
 import { SIGNUP_STRINGS } from '../lang/en/messages';
 import { validateEmail, validatePassword, validateRequired, getPasswordStrength } from '../util/util';
 
@@ -30,7 +29,6 @@ export default function SignupForm({ onToggleMode }: SignupFormProps) {
   const [success, setSuccess] = useState<string>('');
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
   const [showPasswordStrength, setShowPasswordStrength] = useState<boolean>(false);
-  const router = useRouter();
 
   const validateForm = (): boolean => {
     const errors: ValidationErrors = {};

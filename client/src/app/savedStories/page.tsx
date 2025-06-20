@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '../components/navbar';
 import { SAVED_STORIES_STRINGS } from '../lang/en/messages'
@@ -38,22 +38,7 @@ export default function SavedStoriesPage() {
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    checkUser();
-    getApiCalls();
-  }, []);
-
-  useEffect(() => {
-    if (userData) {
-      fetchStories();
-    }
-  }, [userData]);
-
-  useEffect(() => {
-    applyFilters();
-  }, [stories, searchTerm, selectedTags, dateRange, sortBy]);
-
-  const checkUser = async () => {
+  const checkUser = useCallback(async () => {
     try {
       const response = await fetch(`${APP_DOMAIN}/api/v1/checkUser`, {
         method: "GET",
@@ -70,9 +55,9 @@ export default function SavedStoriesPage() {
       console.error("Error:", error);
       router.push('/authenticate');
     }
-  };
+  }, [router]);
 
-  const getApiCalls = async () => {
+  const getApiCalls = useCallback(async () => {
     try {
       const response = await fetch(`${APP_DOMAIN}/api/v1/getApiCalls`, {
         method: "GET",
@@ -86,9 +71,9 @@ export default function SavedStoriesPage() {
     } catch (error) {
       console.error("Error:", error);
     }
-  };
+  }, []);
 
-  const fetchStories = async () => {
+  const fetchStories = useCallback(async () => {
     try {
       setIsLoading(true);
       const response = await fetch(`${APP_DOMAIN}/api/v1/getStories`, {
@@ -120,7 +105,70 @@ export default function SavedStoriesPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
+
+  const applyFilters = useCallback(() => {
+    let filtered = [...stories];
+
+    if (searchTerm) {
+      filtered = filtered.filter(story =>
+        story.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (selectedTags.length > 0) {
+      filtered = filtered.filter(story =>
+        selectedTags.some(tag => story.tags?.includes(tag))
+      );
+    }
+
+    if (dateRange.start || dateRange.end) {
+      filtered = filtered.filter(story => {
+        const storyDate = new Date(story.created_at);
+        const startDate = dateRange.start ? new Date(dateRange.start) : null;
+        const endDate = dateRange.end ? new Date(dateRange.end + 'T23:59:59') : null;
+
+        if (startDate && endDate) {
+          return storyDate >= startDate && storyDate <= endDate;
+        } else if (startDate) {
+          return storyDate >= startDate;
+        } else if (endDate) {
+          return storyDate <= endDate;
+        }
+        return true;
+      });
+    }
+
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case 'newest':
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        case 'oldest':
+          return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+        case 'alphabetical':
+          return a.title.localeCompare(b.title);
+        default:
+          return 0;
+      }
+    });
+
+    setFilteredStories(filtered);
+  }, [stories, searchTerm, selectedTags, dateRange, sortBy]);
+
+  useEffect(() => {
+    checkUser();
+    getApiCalls();
+  }, [checkUser, getApiCalls]);
+
+  useEffect(() => {
+    if (userData) {
+      fetchStories();
+    }
+  }, [userData, fetchStories]);
+
+  useEffect(() => {
+    applyFilters();
+  }, [applyFilters]);
 
   const handleDeleteStory = async (storyId: number) => {
     if (!deleteConfirmId) {
@@ -188,54 +236,6 @@ export default function SavedStoriesPage() {
 
   const handleUsernameUpdate = (newUsername: string) => {
     setUserData(prev => prev ? { ...prev, username: newUsername } : null);
-  };
-
-  const applyFilters = () => {
-    let filtered = [...stories];
-
-    if (searchTerm) {
-      filtered = filtered.filter(story =>
-        story.title.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    if (selectedTags.length > 0) {
-      filtered = filtered.filter(story =>
-        selectedTags.some(tag => story.tags?.includes(tag))
-      );
-    }
-
-    if (dateRange.start || dateRange.end) {
-      filtered = filtered.filter(story => {
-        const storyDate = new Date(story.created_at);
-        const startDate = dateRange.start ? new Date(dateRange.start) : null;
-        const endDate = dateRange.end ? new Date(dateRange.end + 'T23:59:59') : null;
-
-        if (startDate && endDate) {
-          return storyDate >= startDate && storyDate <= endDate;
-        } else if (startDate) {
-          return storyDate >= startDate;
-        } else if (endDate) {
-          return storyDate <= endDate;
-        }
-        return true;
-      });
-    }
-
-    filtered.sort((a, b) => {
-      switch (sortBy) {
-        case 'newest':
-          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-        case 'oldest':
-          return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
-        case 'alphabetical':
-          return a.title.localeCompare(b.title);
-        default:
-          return 0;
-      }
-    });
-
-    setFilteredStories(filtered);
   };
 
   const handleTagToggle = (tag: string) => {

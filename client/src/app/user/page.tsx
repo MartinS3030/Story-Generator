@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '../components/navbar';
 import { USER_STRINGS } from '../lang/en/messages';
@@ -17,6 +17,7 @@ interface UserData {
 
 const STORY_PROMPT_TEMPLATE = `
   Write a {tone} {genre} story set in a {setting}. The main character is {characterName}, who plays the role of a {role}. {plotTwistText}
+  Make sure that the story makes logical sense and keep it within 500 words.
   Can you please return the story in this json format please: { "title": (string, title of the story), "paragraphs": (array of strings for each paragraph of the story) }
 `;
 
@@ -40,12 +41,7 @@ export default function StoryGeneratorPage() {
   });
   const router = useRouter();
 
-  useEffect(() => {
-    checkUser();
-    getApiCalls();
-  }, []);
-
-  const checkUser = async () => {
+  const checkUser = useCallback(async () => {
     try {
       const response = await fetch(`${APP_DOMAIN}/api/v1/checkUser`, {
         method: "GET",
@@ -63,9 +59,9 @@ export default function StoryGeneratorPage() {
       console.error("Error:", error);
       router.push('/authenticate');
     }
-  };
+  }, [router]);
 
-  const getApiCalls = async () => {
+  const getApiCalls = useCallback(async () => {
     try {
       const response = await fetch(`${APP_DOMAIN}/api/v1/getApiCalls`, {
         method: "GET",
@@ -79,7 +75,12 @@ export default function StoryGeneratorPage() {
     } catch (error) {
       console.error("Error:", error);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    checkUser();
+    getApiCalls();
+  }, [checkUser, getApiCalls]);
 
   const handleUsernameUpdate = (newUsername: string) => {
     setUserData(prev => prev ? { ...prev, username: newUsername } : null);
@@ -135,16 +136,16 @@ export default function StoryGeneratorPage() {
       // const parsedData = JSON.parse(data.generatedText);
 
       const parsedData = {
-  "title": "The Clockmaker's Secret",
-  "paragraphs": [
-    "In a misty Victorian town nestled between the hills, time moved differently. The fog rolled in thick every morning, muffling the clinks and ticks that spilled from an old clockmaker's shop on the edge of Rosewood Street.",
-    "The main character, Elara Wren, was a meticulous and reclusive clockmaker, known for crafting pieces that kept perfect time even when the rest of the world seemed to falter. Her role in the town was modest, yet people often whispered about the strange energies surrounding her workbench.",
-    "One stormy evening, a wealthy nobleman visited her shop, requesting a clock that could mark more than just hours—it needed to record fate itself. Intrigued and disturbed, Elara accepted, diving into blueprints and long-forgotten books.",
-    "As she built the clock, time around her bent—flowers bloomed in the dead of winter, and townsfolk experienced déjà vu. The deeper Elara went, the more she realized that the gears of her creation mirrored something ancient and powerful.",
-    "The plot twist came when Elara discovered that the clock wasn't meant to record fate—it was meant to rewrite it. With every tick, history shifted. She had unknowingly been chosen by a hidden society to resurrect the lost art of temporal manipulation.",
-    "Faced with the decision to continue building the device or dismantle it forever, Elara chose a third path. She locked it away, entrusting the key to a child who would one day face the same choice. The town returned to normal—mostly—but Rosewood Street never quite ticked the same again."
-  ]
-}
+        "title": "The Clockmaker's Secret",
+        "paragraphs": [
+          "In a misty Victorian town nestled between the hills, time moved differently. The fog rolled in thick every morning, muffling the clinks and ticks that spilled from an old clockmaker's shop on the edge of Rosewood Street.",
+          "The main character, Elara Wren, was a meticulous and reclusive clockmaker, known for crafting pieces that kept perfect time even when the rest of the world seemed to falter. Her role in the town was modest, yet people often whispered about the strange energies surrounding her workbench.",
+          "One stormy evening, a wealthy nobleman visited her shop, requesting a clock that could mark more than just hours—it needed to record fate itself. Intrigued and disturbed, Elara accepted, diving into blueprints and long-forgotten books.",
+          "As she built the clock, time around her bent—flowers bloomed in the dead of winter, and townsfolk experienced déjà vu. The deeper Elara went, the more she realized that the gears of her creation mirrored something ancient and powerful.",
+          "The plot twist came when Elara discovered that the clock wasn't meant to record fate—it was meant to rewrite it. With every tick, history shifted. She had unknowingly been chosen by a hidden society to resurrect the lost art of temporal manipulation.",
+          "Faced with the decision to continue building the device or dismantle it forever, Elara chose a third path. She locked it away, entrusting the key to a child who would one day face the same choice. The town returned to normal—mostly—but Rosewood Street never quite ticked the same again."
+        ]
+      };
       
       setGeneratedStory({
         title: parsedData.title,
@@ -187,7 +188,7 @@ export default function StoryGeneratorPage() {
         throw new Error(USER_STRINGS.storySaveFailed);
       }
 
-      const data = await response.json();
+      await response.json(); // Process the response but don't store it since it's not used
       alert(USER_STRINGS.storySavedSuccess);
     } catch (error) {
       alert(USER_STRINGS.storySaveError + (error as Error).message);
