@@ -21,7 +21,7 @@ app.use(
   cors({
     // Need to change this to the frontend URL
     origin: [
-      "https://https://storygenerator30.netlify.app",
+      "https://storygenerator30.netlify.app",
       "http://localhost:3000",
     ],
     credentials: true,
