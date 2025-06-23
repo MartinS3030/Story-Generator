@@ -9,8 +9,8 @@ const LOGIN_STRINGS = {
   LOGIN_FAILED: 'Login failed. Please check your credentials.',
   GENERIC_ERROR: 'An error occurred. Please try again.',
   PAGE_TITLE: 'Story Generator',
-  QUOTE: '“this is a test quote to see how it looks like.”',
-  QUOTE_AUTHOR: '– anonymous person',
+  QUOTE: '“A mind needs books as a sword needs a whetstone if it is to keep its edge.”',
+  QUOTE_AUTHOR: '– Tyrion Lannister, A Game of Thrones by George R.R. Martin',
 };
 
 const SIGNUP_STRINGS = {
