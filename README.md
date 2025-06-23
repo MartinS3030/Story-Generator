@@ -4,7 +4,7 @@ A modern web application for story generation.
 
 ## 🌟 Live Demo
 
-[Coming Soon]
+https://storygenerator30.netlify.app/user
 
 ## 📖 Project Description
 
@@ -32,7 +32,7 @@ This project initially started as a school project I made with some classmates o
 
 1. Clone the repository
 ```bash
-git clone https://github.com/MartinS3030/Journal
+git clone https://github.com/MartinS3030/Story-Generator
 ```
 
 2. Set up the server
