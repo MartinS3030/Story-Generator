@@ -57,18 +57,15 @@ require("dotenv").config();
  *         description: Registration failed due to a server error.
  */
 router.post(ROUTES.AUTH.REGISTER, incrementRequestCount, async (req, res) => {
-  console.log(req.body);
   const { username, email, password } = req.body;
 
   const hashedPassword = await hashPassword(password);
 
-  console.log(hashedPassword)
 
   registerUser(username, email, hashedPassword, (err, result) => {
     if (err) {
       return res.status(500).json({ message: messages.registrationFailure });
     }
-    console.log(res);
     res.status(201).json({ message: messages.registrationSuccess });
   });
 });
