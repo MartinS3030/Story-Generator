@@ -1,36 +1,132 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Story Generator
 
-## Getting Started
+A modern web application for story generation.
 
-First, run the development server:
+## 🌟 Live Demo
 
+[Coming Soon]
+
+## 📖 Project Description
+
+Story Generator is a web-based application that allows users generate and manage their stories. The application features:
+- User authentication system
+- Story generation assistance
+- Story organization and management
+- Responsive design for all devices
+
+## 💭 Why This Project
+
+I made this project to practice my full-stack skills. I have had a bit of experience making front end projects, but I have never created backend APIs before, and I have not integrated MySQL databases into a web application either. This project gave me a good opportunity to practice both, as well as creating a secure user authentication process. I also got a chance to use the OpenAI API.
+
+This project initially started as a school project I made with some classmates of mine. The original repo is here: https://github.com/MartinS3030/Story_Generator. During the school year, we had many projects and assignments, so we only created the project in vanilla JavaScript to save some time. After I graduated, I wanted to refactor this project using a more modern tech stack of React, Next.js, and Tailwind. I also added some features to this project that makes the experience a bit more intuitive and useful. This gave me the chance to create more backend services, while continuing to develop my front end skills.
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js (v18.0.0 or higher)
+- npm (v9.0.0 or higher)
+- MySQL (v8.0 or higher)
+
+### Installation
+
+1. Clone the repository
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/MartinS3030/Journal
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Set up the server
+```bash
+# Navigate to the server directory
+cd server
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# Install dependencies
+npm install
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Create a .env file in the server directory with the following variables:
+# DB_HOST = [Your host name, localhost if running locally]
+# DB_USER = [Your DB user]
+# DB_PASSWORD = [Your DB password]
+# DB_NAME = [Your DB name]
+# DB_PORT = [Your DB port]
+# JWT_SECRET= [Your JWT secret]
+# OPENAI_API_KEY= [You will need an API key to run locally]
+# OPENAI_ORGANIZATION_KEY= [You will need an org key to run]
 
-## Learn More
+# Start the server
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+3. Set up the client
+```bash
+# Open a new terminal and navigate to the client directory
+cd client
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Install dependencies
+npm install
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Create a .env file in the client directory with:
+# NEXT_PUBLIC_APP_DOMAIN="http://localhost:4000"
 
-## Deploy on Vercel
+# Start the development server
+npm run dev
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The application will be available at:
+- Frontend: [http://localhost:3000](http://localhost:3000)
+- Backend API: [http://localhost:4000](http://localhost:4000)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Environment Variables
+
+#### Server (.env)
+```
+DB_HOST = [Your host name, localhost if running locally]
+DB_USER = [Your DB user]
+DB_PASSWORD = [Your DB password]
+DB_NAME = [Your DB name]
+DB_PORT = [Your DB port]
+JWT_SECRET= [Your JWT secret]
+OPENAI_API_KEY= [You will need an API key to run locally]
+OPENAI_ORGANIZATION_KEY= [You will need an org key to run]
+```
+
+#### Client (.env)
+```
+NEXT_PUBLIC_APP_DOMAIN="http://localhost:4000"
+```
+
+## 💻 System Requirements
+
+- **Modern Web Browser:** Chrome, Firefox, Safari, or Edge (latest versions)
+- **Screen Resolution:** Optimized for all device sizes
+
+## 🛠️ Technologies Used
+
+### Programming Languages
+- TypeScript
+- JavaScript
+- HTML5
+- CSS3
+
+### Frameworks & Libraries
+- Next.js 14 - React framework
+- Tailwind CSS - Styling
+- React Query - Data fetching
+- Express.js - Backend framework
+
+### Database
+- MySQL - Relational database
+
+### Development Tools
+- TypeScript - Type safety
+- ESLint - Code linting
+- Prettier - Code formatting
+- Git - Version control
+
+## ✨ Key Features
+
+- **User Authentication:** Secure login and registration system
+- **Story Management:** Create, edit, and organize stories
+- **Responsive Design:** Works seamlessly on all devices
+- **Story Generation:** AI-assisted creative writing tools
+
