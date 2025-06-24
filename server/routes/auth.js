@@ -133,19 +133,26 @@ router.post(ROUTES.AUTH.LOGIN, incrementRequestCount, (req, res) => {
         return res.status(400).json({ message: messages.userNotFound });
       }
 
-      // the user object is passed to the generateToken function
-      // is_admin is added to the token payload to show that the user is an admin
       const token = generateToken(user);
 
-      res.cookie("authToken", token, {
+      const isProduction = process.env.NODE_ENV === 'production';
+      
+      let cookieOptions = {
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000,
-        secure: true,
-        sameSite: "none",
         path: "/",
-      });
+      };
 
-      // Respond with API call count from getApiCallCount
+      if (isProduction) {
+        cookieOptions.secure = true;
+        cookieOptions.sameSite = "none";
+      } else {
+        cookieOptions.secure = false;
+        cookieOptions.sameSite = "lax";
+      }
+
+      res.cookie("authToken", token, cookieOptions);
+
       res.json({
         api_calls: apiResults,
         isAdmin: user.is_admin,
@@ -154,6 +161,7 @@ router.post(ROUTES.AUTH.LOGIN, incrementRequestCount, (req, res) => {
     });
   });
 });
+
 
 /**
  * @swagger
